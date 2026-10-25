@@ -1,0 +1,31 @@
+spring:
+  application:
+    name: durable-agent-loop
+  ai:
+    openai:
+      api-key: ${OPENAI_API_KEY}
+      chat:
+        options:
+          model: gpt-4o-mini
+    retry:
+      # 让 Temporal 独占重试：Spring AI 内部只打一次
+      max-attempts: 1
+      # 关键：默认 4xx 一律 NonTransientAiException（不重试）。
+      # 把 429 / 529 / 5xx 标成 Transient，Temporal 才会对它们退避重试。
+      on-http-codes: 429,500,502,503,504,529
+      exclude-on-http-codes: 400,401,403,404
+  temporal:
+    namespace: default
+    connection:
+      target: localhost:7233
+    workers:
+      - task-queue: agent-loop
+        workflow-classes:
+          - com.amir.agentloop.workflow.AgentWorkflowImpl
+        activity-beans:
+          - orderLookupActivityImpl
+          - refundActivityImpl
+
+logging:
+  level:
+    io.temporal.springai: DEBUG
