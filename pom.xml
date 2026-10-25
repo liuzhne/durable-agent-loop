@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+
+  <parent>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-starter-parent</artifactId>
+    <version>3.5.3</version>
+    <relativePath/>
+  </parent>
+
+  <groupId>com.amir</groupId>
+  <artifactId>durable-agent-loop</artifactId>
+  <version>0.1.0-SNAPSHOT</version>
+
+  <properties>
+    <java.version>17</java.version>
+    <!-- Spring Boot 3 / Spring AI 1.x 留在 1.40.x；Boot 4 / Spring AI 2 才迁到 io.temporal:spring-ai -->
+    <temporal.version>1.40.0</temporal.version>
+    <spring-ai.version>1.1.8</spring-ai.version>
+  </properties>
+
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.springframework.ai</groupId>
+        <artifactId>spring-ai-bom</artifactId>
+        <version>${spring-ai.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
+  <dependencies>
+    <dependency>
+      <groupId>org.springframework.boot</groupId>
+      <artifactId>spring-boot-starter-web</artifactId>
+    </dependency>
+
+    <!-- 模型供应商，按需换成 spring-ai-starter-model-anthropic 等 -->
+    <dependency>
+      <groupId>org.springframework.ai</groupId>
+      <artifactId>spring-ai-starter-model-openai</artifactId>
+    </dependency>
+
+    <dependency>
+      <groupId>io.temporal</groupId>
+      <artifactId>temporal-spring-boot-starter</artifactId>
+      <version>${temporal.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>io.temporal</groupId>
+      <artifactId>temporal-spring-ai</artifactId>
+      <version>${temporal.version}</version>
+    </dependency>
+    <!-- temporal-spring-ai 把 temporal-sdk 声明为 compileOnly，需要显式引入 -->
+    <dependency>
+      <groupId>io.temporal</groupId>
+      <artifactId>temporal-sdk</artifactId>
+      <version>${temporal.version}</version>
+    </dependency>
+
+    <dependency>
+      <groupId>io.temporal</groupId>
+      <artifactId>temporal-testing</artifactId>
+      <version>${temporal.version}</version>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>
